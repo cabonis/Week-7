@@ -17,3 +17,12 @@ line{
 .inactive{
     opacity: .1;
 }
+
+.hidden{
+    opacity: 0;
+}
+
+.lineLabel {
+    fill:red;
+    font-size: 2em;
+}

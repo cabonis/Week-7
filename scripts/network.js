@@ -25,7 +25,7 @@ function simulate(data,svg)
         .data(data.links)
         .enter()
         .append("line")
-        .style("stroke-width", (d) => scale_link_stroke_width(d.weight));
+        .style("stroke-width", (d) => scale_link_stroke_width(d.weight));    
         
     let node_elements = main_group.append("g")
         .attr('transform', `translate(${width / 2},${(height/2)-60})`)
@@ -42,10 +42,13 @@ function simulate(data,svg)
                 .classed("inactive", false);
             link_elements.filter((o) => o.source.id === d.id || o.target.id === d.id)
                 .classed("inactive", false);
+            labels.filter((o) => o.source.id === d.id || o.target.id === d.id)
+                .classed("hidden", false);
         })
         .on("mouseleave", (m,d) => {
             node_elements.classed("inactive",false);
             link_elements.classed("inactive", false);
+            labels.classed("hidden", true);
         });
 
     node_elements.append("circle")
@@ -55,6 +58,15 @@ function simulate(data,svg)
     node_elements.append("text")
         .attr("class","label")
         .text((d) => d.id);
+
+    let labels = main_group.append("g")
+        .attr('transform',`translate(${width/2},${(height/2)-60})`)
+        .selectAll(".lineLabel")
+        .data(data.links)
+        .enter()
+        .append("text")
+        .attr("class", "hidden lineLabel")
+        .text((d) => d.weight); 
 
     d3.forceSimulation(data.nodes)
         .force("collide", d3.forceCollide().radius((d) => scale_radius(d.weight)*6))        
@@ -67,12 +79,15 @@ function simulate(data,svg)
            .strength((d) => d.weight*.1)
         )
         .on("tick", () => {
-            node_elements.attr('transform', function(d){return `translate(${d.x},${d.y})`})
+            node_elements.attr('transform', function(d){return `translate(${d.x},${d.y})`});
             link_elements
                 .attr("x1", (d) => d.source.x)
                 .attr("x2", (d) => d.target.x)
                 .attr("y1", (d) => d.source.y)
-                .attr("y2", (d) => d.target.y)
+                .attr("y2", (d) => d.target.y);
+            labels
+                .attr("x", (d) => ((d.source.x + d.target.x) / 2) )
+                .attr("y", (d) => ((d.source.y + d.target.y) / 2))
         }); 
 
     svg.call(d3.zoom()
