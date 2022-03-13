@@ -1,0 +1,19 @@
+svg {
+    width: 100vw;
+    height: 60vw;
+    margin:auto;
+}
+
+line{
+    stroke:#000000;
+}
+
+.label{
+    font-size:.6em;
+    font-family: sans-serif;
+    text-anchor: end;
+}
+
+.inactive{
+    opacity: .1;
+}
